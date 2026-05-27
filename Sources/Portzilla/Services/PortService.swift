@@ -87,4 +87,57 @@ struct PortService: Sendable {
             return seen.insert(key).inserted
         }
     }
+
+    func listListeningPorts() async throws -> [PortInfo] {
+        let result: (stdout: String, stderr: String, exitCode: Int32)
+        do {
+            result = try runner("/usr/sbin/lsof", ["-nP", "-iTCP", "-sTCP:LISTEN", "-F", "pcnLP"], 5)
+        } catch ProcessRunnerError.timeout {
+            throw PortServiceError.lsofTimeout
+        } catch {
+            throw PortServiceError.lsofNotFound
+        }
+
+        let entries = Self.parseLsofOutput(result.stdout)
+        let deduped = Self.dedupeEntries(entries)
+
+        var commandMap: [Int32: String] = [:]
+        for pid in Set(deduped.map(\.pid)) {
+            if let r = try? runner("/bin/ps", ["-p", "\(pid)", "-o", "command="], 5),
+               r.exitCode == 0 {
+                let cmd = r.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !cmd.isEmpty { commandMap[pid] = cmd }
+            }
+        }
+
+        let currentUser = ProcessInfo.processInfo.userName
+
+        return deduped
+            .map { entry in
+                PortInfo(
+                    id: "\(entry.pid):\(entry.port)",
+                    port: entry.port,
+                    pid: entry.pid,
+                    processName: entry.processName,
+                    command: commandMap[entry.pid] ?? entry.processName,
+                    user: entry.user,
+                    isOwnedByCurrentUser: entry.user == currentUser
+                )
+            }
+            .sorted { $0.port < $1.port }
+    }
+
+    func kill(pid: Int32, force: Bool) throws {
+        let signal: Int32 = force ? SIGKILL : SIGTERM
+        let result = Darwin.kill(pid, signal)
+        if result == -1 {
+            if errno == EPERM {
+                throw PortServiceError.permissionDenied(pid: pid)
+            }
+        }
+    }
+
+    func isProcessAlive(pid: Int32) -> Bool {
+        Darwin.kill(pid, 0) == 0
+    }
 }
