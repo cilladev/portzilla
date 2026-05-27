@@ -10,7 +10,6 @@ final class AppState: ObservableObject {
     @Published var toast: String? = nil
     @Published var isPopoverOpen: Bool = false
     @Published var permissionAlert: PortInfo? = nil
-    @Published var killAllConfirmation: [PortInfo] = []
 
     let portService = PortService()
     private var refreshTimer: Timer?
@@ -57,37 +56,6 @@ final class AppState: ObservableObject {
 
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         if portService.isProcessAlive(pid: port.pid) {
-            try? portService.kill(pid: port.pid, force: true)
-        }
-
-        try? await Task.sleep(nanoseconds: 300_000_000)
-        await refresh()
-    }
-
-    func confirmKillAllDevPorts() {
-        let killable = ports.filter { $0.isOwnedByCurrentUser && $0.pid != getpid() }
-        guard !killable.isEmpty else {
-            showToast("No dev ports to kill.")
-            return
-        }
-        killAllConfirmation = killable
-    }
-
-    func killAllDevPorts() async {
-        let killable = killAllConfirmation
-        killAllConfirmation = []
-
-        var killedCount = 0
-        for port in killable {
-            do {
-                try portService.kill(pid: port.pid, force: false)
-                killedCount += 1
-            } catch {}
-        }
-        showToast("Killed \(killedCount) processes")
-
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        for port in killable where portService.isProcessAlive(pid: port.pid) {
             try? portService.kill(pid: port.pid, force: true)
         }
 
