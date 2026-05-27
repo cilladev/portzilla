@@ -63,7 +63,7 @@ struct PortzillaApp: App {
             HStack(spacing: 4) {
                 Image(systemName: "powerplug")
                 if state.listeningCount > 0 {
-                    Text("\(state.listeningCount)")
+                    Text(String(state.listeningCount))
                         .font(.system(size: 11, weight: .medium))
                 }
             }

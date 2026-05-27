@@ -10,7 +10,7 @@ struct PortRowView: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Text(":\(port.port)")
+            Text(":\(String(port.port))")
                 .font(.system(size: 13, design: .monospaced).weight(.semibold))
                 .foregroundColor(.accentColor)
                 .frame(width: 64, alignment: .leading)
@@ -27,7 +27,7 @@ struct PortRowView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("PID \(port.pid)")
+            Text("PID \(String(port.pid))")
                 .font(.system(size: 12, design: .monospaced))
                 .foregroundColor(.secondary)
                 .frame(width: 78, alignment: .leading)

@@ -6,7 +6,7 @@ struct FooterView: View {
 
     var body: some View {
         HStack {
-            Text("\(state.listeningCount) listening port\(state.listeningCount == 1 ? "" : "s")")
+            Text("\(String(state.listeningCount)) listening port\(state.listeningCount == 1 ? "" : "s")")
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
 

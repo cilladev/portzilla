@@ -52,7 +52,7 @@ final class AppState: ObservableObject {
         }
 
         ports.removeAll { $0.id == port.id }
-        showToast("Killed \(port.processName) on :\(port.port)")
+        showToast("Killed \(port.processName) on :\(String(port.port))")
 
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         if portService.isProcessAlive(pid: port.pid) {
