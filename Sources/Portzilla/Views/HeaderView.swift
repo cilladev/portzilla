@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HeaderView: View {
     @EnvironmentObject var state: AppState
+    @State private var spinDegrees: Double = 0
 
     var body: some View {
         HStack(spacing: 10) {
@@ -26,11 +27,7 @@ struct HeaderView: View {
             } label: {
                 Image(systemName: "arrow.clockwise")
                     .font(.system(size: 14))
-                    .rotationEffect(.degrees(state.isLoading ? 360 : 0))
-                    .animation(
-                        state.isLoading ? .linear(duration: 0.6).repeatForever(autoreverses: false) : .default,
-                        value: state.isLoading
-                    )
+                    .rotationEffect(.degrees(spinDegrees))
             }
             .buttonStyle(.plain)
             .foregroundColor(.secondary)
@@ -39,6 +36,17 @@ struct HeaderView: View {
                 RoundedRectangle(cornerRadius: 6)
                     .stroke(Color(NSColor.separatorColor), lineWidth: 0.5)
             )
+            .onChange(of: state.isLoading) { loading in
+                if loading {
+                    withAnimation(.linear(duration: 0.6).repeatForever(autoreverses: false)) {
+                        spinDegrees += 360
+                    }
+                } else {
+                    withAnimation(.default) {
+                        spinDegrees = 0
+                    }
+                }
+            }
 
             Button {} label: {
                 Image(systemName: "gearshape")
