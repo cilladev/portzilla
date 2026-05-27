@@ -5,7 +5,7 @@
 
 A macOS menu bar app for listing and killing processes bound to local ports. Hit `EADDRINUSE`? Click once instead of running `lsof` + `kill`.
 
-![Portzilla](docs/screenshot.png)
+<img src="docs/screenshot.png" alt="Portzilla" width="420">
 
 ## Requirements
 
