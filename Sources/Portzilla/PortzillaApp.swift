@@ -4,6 +4,10 @@ import SwiftUI
 struct PortzillaApp: App {
     @StateObject private var state = AppState.shared
 
+    init() {
+        HotkeyManager.register()
+    }
+
     var body: some Scene {
         MenuBarExtra {
             VStack(spacing: 0) {
