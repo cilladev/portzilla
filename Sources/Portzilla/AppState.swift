@@ -63,11 +63,6 @@ final class AppState: ObservableObject {
         await refresh()
     }
 
-    func togglePopover() {
-        guard let delegate = NSApp.delegate as? AppDelegate else { return }
-        delegate.togglePopover()
-    }
-
     private var lastRefreshTime: Date = .distantPast
 
     func debouncedRefresh() async {

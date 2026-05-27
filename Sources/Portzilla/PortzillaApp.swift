@@ -38,8 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
             .sink { [weak self] _ in self?.updateMenuBarButton() }
             .store(in: &cancellables)
 
-        HotkeyManager.register()
-
         Task {
             await state.refresh()
             state.startBackgroundRefresh()

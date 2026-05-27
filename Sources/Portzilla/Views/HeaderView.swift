@@ -12,14 +12,6 @@ struct HeaderView: View {
             Text("Portzilla")
                 .font(.system(size: 13, weight: .medium))
 
-            Text("⌃⌥P")
-                .font(.system(size: 11, design: .monospaced))
-                .foregroundColor(Color(NSColor.tertiaryLabelColor))
-                .padding(.horizontal, 7)
-                .padding(.vertical, 2)
-                .background(Color(NSColor.controlBackgroundColor))
-                .cornerRadius(4)
-
             Spacer()
 
             Button {
@@ -47,18 +39,6 @@ struct HeaderView: View {
                     }
                 }
             }
-
-            Button {} label: {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 14))
-            }
-            .buttonStyle(.plain)
-            .foregroundColor(.secondary)
-            .frame(width: 26, height: 26)
-            .overlay(
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color(NSColor.separatorColor), lineWidth: 0.5)
-            )
         }
         .padding(.horizontal, 14)
         .frame(height: 44)
