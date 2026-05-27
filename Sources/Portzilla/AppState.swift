@@ -64,15 +64,8 @@ final class AppState: ObservableObject {
     }
 
     func togglePopover() {
-        for window in NSApp.windows where window.className.contains("StatusBarWindow") {
-            if window.isVisible {
-                window.orderOut(nil)
-            } else {
-                window.makeKeyAndOrderFront(nil)
-                NSApp.activate(ignoringOtherApps: true)
-            }
-            return
-        }
+        guard let delegate = NSApp.delegate as? AppDelegate else { return }
+        delegate.togglePopover()
     }
 
     private var lastRefreshTime: Date = .distantPast
