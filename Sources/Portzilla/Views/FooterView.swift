@@ -13,7 +13,7 @@ struct FooterView: View {
             Spacer()
 
             Button {
-                Task { await state.killAllDevPorts() }
+                state.confirmKillAllDevPorts()
             } label: {
                 HStack(spacing: 5) {
                     Image(systemName: "flame")

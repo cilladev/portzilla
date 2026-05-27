@@ -59,6 +59,20 @@ struct PortzillaApp: App {
                     Text("Cannot kill \(port.user)'s process. Run with elevated permissions to terminate root-owned ports.")
                 }
             }
+            .alert(
+                "Kill \(String(state.killAllConfirmation.count)) dev port\(state.killAllConfirmation.count == 1 ? "" : "s")?",
+                isPresented: Binding(
+                    get: { !state.killAllConfirmation.isEmpty },
+                    set: { if !$0 { state.killAllConfirmation = [] } }
+                )
+            ) {
+                Button("Kill All", role: .destructive) {
+                    Task { await state.killAllDevPorts() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(state.killAllConfirmation.map { "\(String($0.port)) (\($0.processName))" }.joined(separator: ", "))
+            }
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "powerplug")

@@ -10,6 +10,7 @@ final class AppState: ObservableObject {
     @Published var toast: String? = nil
     @Published var isPopoverOpen: Bool = false
     @Published var permissionAlert: PortInfo? = nil
+    @Published var killAllConfirmation: [PortInfo] = []
 
     let portService = PortService()
     private var refreshTimer: Timer?
@@ -63,8 +64,19 @@ final class AppState: ObservableObject {
         await refresh()
     }
 
-    func killAllDevPorts() async {
+    func confirmKillAllDevPorts() {
         let killable = ports.filter { $0.isOwnedByCurrentUser && $0.pid != getpid() }
+        guard !killable.isEmpty else {
+            showToast("No dev ports to kill.")
+            return
+        }
+        killAllConfirmation = killable
+    }
+
+    func killAllDevPorts() async {
+        let killable = killAllConfirmation
+        killAllConfirmation = []
+
         var killedCount = 0
         for port in killable {
             do {
