@@ -12,7 +12,7 @@ A macOS menu bar app for listing and killing processes bound to local ports. Hit
 ## Quick start
 
 ```bash
-git clone <repo-url> && cd portzilla
+git clone https://github.com/cilladev/portzilla.git && cd portzilla
 swift run
 ```
 
