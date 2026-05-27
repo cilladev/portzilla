@@ -1,5 +1,8 @@
 # Portzilla
 
+[![Tests](https://github.com/cilladev/portzilla/actions/workflows/test.yml/badge.svg)](https://github.com/cilladev/portzilla/actions/workflows/test.yml)
+![Coverage](https://img.shields.io/badge/coverage-82%25-brightgreen)
+
 A macOS menu bar app for listing and killing processes bound to local ports. Hit `EADDRINUSE`? Click once instead of running `lsof` + `kill`.
 
 ![Portzilla](docs/screenshot.png)
@@ -26,10 +29,6 @@ make bundle
 ## Set as login item
 
 System Settings → General → Login Items → add `Portzilla.app`
-
-## Hotkey
-
-**⌃⌥P** (Control + Option + P) toggles the popover from any app.
 
 ## Development
 

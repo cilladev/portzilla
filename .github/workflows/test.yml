@@ -1,0 +1,41 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests with coverage
+        run: swift test --enable-code-coverage
+
+      - name: Extract coverage
+        id: coverage
+        run: |
+          BIN=.build/debug/PortzillaPackageTests.xctest/Contents/MacOS/PortzillaPackageTests
+          PROF=.build/debug/codecov/default.profdata
+          COV=$(xcrun llvm-cov report "$BIN" --instr-profile "$PROF" --sources Sources/Portzilla/Services/PortService.swift Sources/Portzilla/Models/PortInfo.swift | grep TOTAL | awk '{print $NF}')
+          echo "coverage=$COV" >> "$GITHUB_OUTPUT"
+          echo "Service coverage: $COV"
+
+      - name: Generate coverage badge
+        run: |
+          COV="${{ steps.coverage.outputs.coverage }}"
+          NUM=${COV%\%}
+          if (( $(echo "$NUM >= 80" | bc -l) )); then COLOR="brightgreen";
+          elif (( $(echo "$NUM >= 60" | bc -l) )); then COLOR="yellow";
+          else COLOR="red"; fi
+          mkdir -p .badges
+          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${COV}\",\"color\":\"${COLOR}\"}" > .badges/coverage.json
+
+      - name: Upload coverage badge
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge
+          path: .badges/coverage.json
